@@ -1,0 +1,397 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <!-- SEO Meta Tags -->
+  <title>PasteDL | Clipboard-to-File Utility</title>
+  <meta name="description" content="A feature-rich, 100% local, dark glassmorphic web utility to instantly convert your pasted code, images, Base64 strings, or file URLs into clean downloads.">
+  <meta name="author" content="Antigravity">
+  
+  <!-- Fonts -->
+  <link rel="icon" type="image/svg+xml" href="favicon.svg">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <div id="app-container">
+    
+    <!-- Sidebar Navigation -->
+    <aside>
+      <div class="logo-container">
+        <div class="logo-icon" style="background: transparent; border: none;">
+          <img src="favicon.svg" alt="PasteDL Logo" style="width: 100%; height: 100%; display: block; border-radius: var(--radius-md);">
+        </div>
+        <div class="logo-text">
+          <h1>PasteDL</h1>
+          <p>Local Utility</p>
+        </div>
+      </div>
+      
+      <ul class="nav-menu">
+        <li class="nav-item active" data-tab="text-tab">
+          <button id="nav-text-btn">
+            <i data-lucide="file-code"></i>
+            <span>Text / Code</span>
+          </button>
+        </li>
+        <li class="nav-item" data-tab="image-tab">
+          <button id="nav-image-btn">
+            <i data-lucide="image"></i>
+            <span>Image Clipboard</span>
+          </button>
+        </li>
+        <li class="nav-item" data-tab="base64-tab">
+          <button id="nav-base64-btn">
+            <i data-lucide="binary"></i>
+            <span>Base64 Decoder</span>
+          </button>
+        </li>
+        <li class="nav-item" data-tab="svg-tab">
+          <button id="nav-svg-btn">
+            <i data-lucide="feather"></i>
+            <span>SVG Previewer</span>
+          </button>
+        </li>
+        <li class="nav-item" data-tab="url-tab">
+          <button id="nav-url-btn">
+            <i data-lucide="link-2"></i>
+            <span>URL Downloader</span>
+          </button>
+        </li>
+      </ul>
+      
+      <div class="sidebar-footer">
+        <p>
+          <i data-lucide="shield-check"></i>
+          <span>100% Client-Side & Secure</span>
+        </p>
+      </div>
+    </aside>
+    
+    <!-- Main Content Area -->
+    <main>
+      
+      <!-- Header Banner & Action Context -->
+      <header>
+        <div class="header-title">
+          <h2 id="current-tab-title">Paste Text or Code</h2>
+          <p id="current-tab-desc">Instantly download pasted text or code snippet as a custom file formatting.</p>
+        </div>
+        
+        <div class="clipboard-toast-banner" style="display: flex; gap: 0.5rem; align-items: center; width: 100%;">
+          <i data-lucide="zap"></i>
+          <span class="desktop-only">Press <strong>Ctrl+V</strong> anywhere to auto-process clipboard content!</span>
+          <button class="btn btn-primary mobile-only" id="global-paste-btn" style="margin-left: auto; padding: 0.25rem 0.6rem; font-size: 0.75rem; font-weight: 500; border-radius: var(--radius-sm); display: inline-flex; align-items: center; gap: 0.25rem; background: var(--color-primary); color: #ffffff; border: none; cursor: pointer;">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-clipboard-paste-icon lucide-clipboard-paste" style="width: 13px; height: 13px; display: block;">
+              <path d="M11 14h10"/>
+              <path d="M16 4h2a2 2 0 0 1 2 2v1.344"/>
+              <path d="m17 18 4-4-4-4"/>
+              <path d="M8 4H6a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h12a2 2 0 0 0 1.793-1.113"/>
+              <rect x="8" y="2" width="8" height="4" rx="1"/>
+            </svg>
+            <span>Paste Clipboard</span>
+          </button>
+        </div>
+      </header>
+
+      <!-- TAB 1: TEXT / CODE -->
+      <section id="text-tab" class="tab-content active">
+        <div class="glass-panel">
+          <div class="panel-header">
+            <h3><i data-lucide="file-text"></i> Code / Text Editor</h3>
+            <span class="clipboard-toast-banner" style="padding: 0.4rem 0.8rem; font-size: 0.75rem;">
+              <i data-lucide="smile"></i> Auto-detection is active
+            </span>
+          </div>
+          
+          <div class="editor-container">
+            <div class="line-numbers" id="line-numbers">1</div>
+            <textarea id="text-input" class="custom-editor" placeholder="Paste your text or code here... (Auto-detect will try to scan JSON, Markdown, JavaScript, HTML, CSS, CSV, XML or plain text)" spellcheck="false"></textarea>
+          </div>
+          
+          <div class="controls-grid">
+            <div class="form-group">
+              <label for="text-filename">Filename</label>
+              <div class="input-wrapper">
+                <i data-lucide="file"></i>
+                <input type="text" id="text-filename" placeholder="snippet" value="snippet">
+              </div>
+            </div>
+            
+            <div class="form-group">
+              <label for="text-extension">Format / Extension</label>
+              <select id="text-extension">
+                <option value="txt" selected>Plain Text (.txt)</option>
+                <option value="json">JSON Data (.json)</option>
+                <option value="md">Markdown Document (.md)</option>
+                <option value="js">JavaScript (.js)</option>
+                <option value="html">HTML Webpage (.html)</option>
+                <option value="css">CSS Stylesheet (.css)</option>
+                <option value="csv">CSV Spreadsheet (.csv)</option>
+                <option value="xml">XML Document (.xml)</option>
+                <option value="py">Python Script (.py)</option>
+                <option value="sh">Shell Script (.sh)</option>
+              </select>
+            </div>
+          </div>
+          
+          <div class="actions-container">
+            <button class="btn btn-secondary" id="text-clear-btn">
+              <i data-lucide="trash-2"></i> Clear
+            </button>
+            <button class="btn btn-primary" id="text-download-btn">
+              <i data-lucide="download"></i> Download File
+            </button>
+          </div>
+        </div>
+      </section>
+
+      <!-- TAB 2: IMAGE CLIPBOARD -->
+      <section id="image-tab" class="tab-content">
+        <div class="glass-panel">
+          <div class="panel-header">
+            <h3><i data-lucide="image"></i> Image Previewer & Converter</h3>
+          </div>
+          
+          <!-- Image Drag/Drop & Paste Preview Zone -->
+          <div class="image-preview-zone" id="image-dropzone">
+            <div class="preview-placeholder" id="image-placeholder">
+              <i data-lucide="images"></i>
+              <p>Copy an image from another site/app, then press <strong>Ctrl+V</strong> here.</p>
+              <p style="font-size: 0.8rem; color: var(--text-muted);">Or drag and drop an image file here.</p>
+            </div>
+            
+            <div class="image-details-container" id="image-details-wrapper" style="display: none;">
+              <div class="image-preview-wrapper">
+                <img id="image-preview-img" src="" alt="Clipboard Paste Preview">
+              </div>
+              
+              <div class="img-meta-grid">
+                <div class="img-meta-item">
+                  <span>Pasted Format</span>
+                  <span id="img-meta-format">-</span>
+                </div>
+                <div class="img-meta-item">
+                  <span>Dimensions</span>
+                  <span id="img-meta-dims">-</span>
+                </div>
+                <div class="img-meta-item">
+                  <span>File Size</span>
+                  <span id="img-meta-size">-</span>
+                </div>
+              </div>
+            </div>
+          </div>
+          
+          <!-- Image Export Config -->
+          <div id="image-export-settings" class="controls-grid" style="display: none;">
+            <div class="form-group">
+              <label for="image-filename">Filename</label>
+              <div class="input-wrapper">
+                <i data-lucide="file-image"></i>
+                <input type="text" id="image-filename" value="pasted_image">
+              </div>
+            </div>
+            
+            <div class="form-group">
+              <label for="image-format-select">Export Format</label>
+              <select id="image-format-select">
+                <option value="png" selected>PNG Lossless (.png)</option>
+                <option value="jpeg">JPEG Standard (.jpg)</option>
+                <option value="webp">WebP Modern (.webp)</option>
+              </select>
+            </div>
+            
+            <div class="form-group slider-group" id="image-quality-group" style="display: none;">
+              <div class="slider-labels">
+                <label for="image-quality-slider">Quality</label>
+                <span id="image-quality-val">85%</span>
+              </div>
+              <input type="range" id="image-quality-slider" min="10" max="100" value="85">
+            </div>
+          </div>
+          
+          <div class="actions-container" id="image-actions" style="display: none;">
+            <button class="btn btn-secondary" id="image-clear-btn">
+              <i data-lucide="trash-2"></i> Remove
+            </button>
+            <button class="btn btn-primary" id="image-download-btn">
+              <i data-lucide="download"></i> Convert & Download
+            </button>
+          </div>
+        </div>
+      </section>
+
+      <!-- TAB 3: BASE64 DECODER -->
+      <section id="base64-tab" class="tab-content">
+        <div class="glass-panel">
+          <div class="panel-header">
+            <h3><i data-lucide="binary"></i> Base64 Binary Decoder</h3>
+          </div>
+          
+          <div class="form-group">
+            <label for="base64-input">Base64 Encoded String</label>
+            <div class="editor-container">
+              <textarea id="base64-input" class="custom-editor" placeholder="Paste your Base64 string here (e.g. data:image/png;base64,... or raw standard/URL-safe base64 strings)" style="min-height: 180px;"></textarea>
+            </div>
+          </div>
+          
+          <div class="controls-grid">
+            <div class="form-group">
+              <label for="base64-filename">Target Filename</label>
+              <div class="input-wrapper">
+                <i data-lucide="file-archive"></i>
+                <input type="text" id="base64-filename" value="decoded_file">
+              </div>
+            </div>
+            
+            <div class="form-group">
+              <label for="base64-extension">Target Extension</label>
+              <div class="input-wrapper">
+                <i data-lucide="file-question"></i>
+                <input type="text" id="base64-extension" value="bin" placeholder="e.g. png, pdf, zip, txt">
+              </div>
+            </div>
+          </div>
+          
+          <div class="img-meta-grid" id="base64-meta" style="display: none; grid-template-columns: 1fr 1fr;">
+            <div class="img-meta-item">
+              <span>Detected Type</span>
+              <span id="base64-detected-mime">unknown/binary</span>
+            </div>
+            <div class="img-meta-item">
+              <span>Decoded Binary Size</span>
+              <span id="base64-decoded-size">0 bytes</span>
+            </div>
+          </div>
+          
+          <div class="actions-container">
+            <button class="btn btn-secondary" id="base64-clear-btn">
+              <i data-lucide="trash-2"></i> Clear
+            </button>
+            <button class="btn btn-primary" id="base64-download-btn">
+              <i data-lucide="download"></i> Decode & Download
+            </button>
+          </div>
+        </div>
+      </section>
+
+      <!-- TAB 4: SVG PREVIEWER -->
+      <section id="svg-tab" class="tab-content">
+        <div class="glass-panel">
+          <div class="panel-header">
+            <h3><i data-lucide="eye"></i> SVG Previewer & High-Res PNG Renderer</h3>
+          </div>
+          
+          <div class="form-group">
+            <label for="svg-input">SVG Source Code</label>
+            <div class="editor-container">
+              <textarea id="svg-input" class="custom-editor" placeholder="Paste your <svg>...</svg> raw code here" style="min-height: 150px;"></textarea>
+            </div>
+          </div>
+          
+          <div class="controls-grid" style="grid-template-columns: 2fr 1fr 1fr;">
+            <div class="form-group">
+              <label for="svg-filename">Filename</label>
+              <div class="input-wrapper">
+                <i data-lucide="file-code"></i>
+                <input type="text" id="svg-filename" value="vector_graphic">
+              </div>
+            </div>
+            
+            <div class="form-group">
+              <label for="svg-export-width">Render Width (px)</label>
+              <input type="number" id="svg-export-width" value="1024" min="32" max="8192">
+            </div>
+            
+            <div class="form-group">
+              <label for="svg-export-height">Render Height (px)</label>
+              <input type="number" id="svg-export-height" value="1024" min="32" max="8192">
+            </div>
+          </div>
+          
+          <!-- Live Preview Arena -->
+          <div class="form-group" id="svg-preview-section" style="display: none;">
+            <label>Interactive Vector Preview</label>
+            <div class="svg-render-area" id="svg-render-preview"></div>
+          </div>
+          
+          <div class="actions-container">
+            <button class="btn btn-secondary" id="svg-clear-btn">
+              <i data-lucide="trash-2"></i> Clear
+            </button>
+            <button class="btn btn-secondary" id="svg-download-raw-btn" style="display: none;">
+              <i data-lucide="file-down"></i> Download SVG
+            </button>
+            <button class="btn btn-primary" id="svg-download-png-btn" style="display: none;">
+              <i data-lucide="download"></i> Render & Download PNG
+            </button>
+          </div>
+        </div>
+      </section>
+
+      <!-- TAB 5: URL DOWNLOADER -->
+      <section id="url-tab" class="tab-content">
+        <div class="glass-panel">
+          <div class="panel-header">
+            <h3><i data-lucide="link"></i> File Downloader from URL</h3>
+          </div>
+          
+          <div class="form-group">
+            <label for="url-input">Direct File URL</label>
+            <div class="url-input-container">
+              <div class="input-wrapper" style="flex-grow: 1;">
+                <i data-lucide="globe"></i>
+                <input type="text" id="url-input" placeholder="https://example.com/assets/report.pdf or any public file URL">
+              </div>
+              <button class="btn btn-primary" id="url-download-btn">
+                <i data-lucide="download-cloud"></i> Fetch & Download
+              </button>
+            </div>
+          </div>
+          
+          <!-- Fallback direct download link -->
+          <div id="url-fallback-area" style="display: none;" class="clipboard-toast-banner">
+            <i data-lucide="alert-triangle"></i>
+            <div>
+              <p><strong>CORS Restriction Detected.</strong> We can't parse this file in the background.</p>
+              <p style="font-size: 0.8rem; margin-top: 0.25rem;">
+                Try opening it directly: <a href="#" id="url-fallback-link" target="_blank" rel="noopener noreferrer" style="color: var(--color-secondary); font-weight: bold; text-decoration: underline;">Click here to open and save (Ctrl+S)</a>
+              </p>
+            </div>
+          </div>
+
+          <div class="info-cards-grid">
+            <div class="info-card">
+              <i data-lucide="server-off"></i>
+              <h4>100% Safe</h4>
+              <p>No downloads are sent to third-party proxies. Everything is done through standard safe secure HTTP requests from your own browser.</p>
+            </div>
+            
+            <div class="info-card">
+              <i data-lucide="help-circle"></i>
+              <h4>What is CORS?</h4>
+              <p>Some servers restrict direct scraping/fetching from external domains. If a download fails, we immediately provide a secure direct alternate link.</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+    </main>
+  </div>
+
+  <!-- Floating Toast Notifications System -->
+  <div id="toast-container"></div>
+  
+  <!-- Canvas Utility (hidden) -->
+  <div class="canvas-holder">
+    <canvas id="hidden-canvas"></canvas>
+  </div>
+
+  <!-- Lucide Icons & App Script -->
+  <script src="https://cdn.jsdelivr.net/npm/lucide/dist/umd/lucide.min.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
