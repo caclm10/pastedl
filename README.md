@@ -44,37 +44,6 @@ Dirancang khusus dengan estetika **Light Mode Sand & Chestnut Brown** yang bersi
 
 ---
 
-## 🚀 Cara Menjalankan secara Lokal
-
-Aplikasi ini bersifat statis murni sehingga tidak memerlukan proses *compiling* apa pun. Anda dapat membukanya langsung dengan mengeklik ganda `index.html` pada komputer Anda. Namun, demi mendukung fitur **Clipboard API (Paste Button)** dan kelancaran unduhan, sangat disarankan dijalankan menggunakan server lokal:
-
-### Opsi A: Menggunakan Node/NPX (Sangat Mudah)
-Jalankan perintah ini di dalam direktori proyek Anda:
-```bash
-npx serve .
-```
-Aplikasi akan langsung berjalan pada alamat: `http://localhost:3000` (atau port kosong lainnya).
-
-### Opsi B: Menggunakan Python
-Jika komputer Anda memiliki Python terinstal, jalankan:
-```bash
-# Untuk Python 3
-python3 -m http.server 3000
-```
-Buka peramban Anda dan kunjungi: `http://localhost:3000`.
-
----
-
-## 🌐 Publikasi Subdomain (GitHub Pages + Cloudflare)
-
-Aplikasi PasteDL ini sangat ideal untuk dipublikasikan ke layanan hosting gratis **GitHub Pages** dan dihubungkan ke **Cloudflare** untuk subdomain kustom Anda (misalnya `pastedl.domainanda.com`):
-
-1.  **Pengaturan Cloudflare DNS**: Buat rekaman DNS baru bertipe `CNAME` dengan Name `pastedl` dan Target diisi `usernamegithubanda.github.io`. Pastikan tombol Proxy (awan oranye) tetap aktif.
-2.  **Hubungkan Custom Domain di GitHub**: Masuk ke repositori Anda, buka **Settings > Pages**, ketik domain kustom lengkap Anda `pastedl.domainanda.com` di kolom Custom Domain, lalu simpan.
-3.  **Setel SSL Cloudflare ke Full**: Di dasbor Cloudflare Anda, masuk ke **SSL/TLS** lalu ubah mode enkripsi ke **Full (Strict)** demi menghindari konflik putaran pengalihan HTTPS tak berujung (*infinite loop*).
-
----
-
 ## 📄 Lisensi
 
 Proyek ini dirilis di bawah lisensi **MIT**. Anda bebas menyalin, memodifikasi, dan menggunakannya secara gratis.
